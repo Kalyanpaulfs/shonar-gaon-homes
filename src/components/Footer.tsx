@@ -19,7 +19,7 @@ export function Footer() {
           {/* Society Info */}
           <div className="lg:col-span-2">
             <h3 className="text-2xl font-bold mb-4 text-secondary">
-              Shonar Gaon Bungalow Project
+              Sonar Gaon Bungalow Project
             </h3>
             <p className="text-primary-foreground/90 mb-6 leading-relaxed">
               A vibrant residential community where traditions meet modern living. 
@@ -37,7 +37,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <Mail className="h-4 w-4" />
-                <span>info@shonargaon.com</span>
+                <span>info@Sonargaon.com</span>
               </div>
             </div>
           </div>
@@ -87,7 +87,7 @@ export function Footer() {
         <div className="border-t border-primary-foreground/20 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-primary-foreground/80 text-sm">
-              © {currentYear} Shonar Gaon Bungalow Project. All rights reserved.
+              © {currentYear} Sonar Gaon Bungalow Project. All rights reserved.
             </p>
             <p className="text-primary-foreground/60 text-sm flex items-center gap-1">
               Made with <Heart className="h-4 w-4 text-red-400" /> for our community

@@ -20,21 +20,21 @@ const committeeMembers = [
     position: "President",
     icon: Crown,
     contact: "+91 98765 43210",
-    email: "president@shonargaon.com"
+    email: "president@Sonargaon.com"
   },
   {
     name: "Priya Sharma",
     position: "Secretary",
     icon: User,
     contact: "+91 98765 43211",
-    email: "secretary@shonargaon.com"
+    email: "secretary@Sonargaon.com"
   },
   {
     name: "Amit Gupta",
     position: "Treasurer",
     icon: Shield,
     contact: "+91 98765 43212",
-    email: "treasurer@shonargaon.com"
+    email: "treasurer@Sonargaon.com"
   }
 ];
 
@@ -176,7 +176,7 @@ export function Contact() {
                 <div>
                   <h4 className="font-semibold text-primary mb-2">Society Address</h4>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Shonar Gaon Bungalow Project,<br />
+                    Sonar Gaon Bungalow Project,<br />
                     Sector 12, New Town,<br />
                     Kolkata - 700156,<br />
                     West Bengal, India

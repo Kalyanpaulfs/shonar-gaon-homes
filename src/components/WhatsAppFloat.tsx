@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 
 export function WhatsAppFloat() {
   const whatsappNumber = "+919876543210"; // Society's WhatsApp number
-  const message = "Hello! I have a query about Shonar Gaon Bungalow Project.";
+  const message = "Hello! I have a query about Sonar Gaon Bungalow Project.";
   
   const handleWhatsAppClick = () => {
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
