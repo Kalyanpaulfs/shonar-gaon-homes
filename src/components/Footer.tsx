@@ -13,46 +13,61 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-primary text-primary-foreground">
-      <div className="container max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12">
+    <footer className="bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 text-slate-200 relative overflow-hidden">
+      {/* Background glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-indigo-500/5 pointer-events-none"></div>
+      
+      <div className="container max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Society Info */}
           <div className="lg:col-span-2">
-            <h3 className="text-2xl font-bold mb-4 text-secondary">
+            <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               Sonar Gaon Bungalow Project
             </h3>
-            <p className="text-primary-foreground/90 mb-6 leading-relaxed">
+            <p className="text-slate-300 mb-6 leading-relaxed">
               A vibrant residential community where traditions meet modern living. 
               Experience the perfect blend of comfort, security, and community spirit 
               in our beautifully designed bungalow project.
             </p>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm">
-                <MapPin className="h-4 w-4" />
-                <span>Sector 12, New Town, Kolkata - 700156</span>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-sm group">
+                <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500/20 to-purple-500/20 group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all duration-300">
+                  <MapPin className="h-4 w-4 text-blue-400" />
+                </div>
+                <span className="group-hover:text-white transition-colors duration-300">Sector 12, New Town, Kolkata - 700156</span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Phone className="h-4 w-4" />
-                <span>+91 98765 43210</span>
+              <div className="flex items-center gap-3 text-sm group">
+                <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500/20 to-purple-500/20 group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all duration-300">
+                  <Phone className="h-4 w-4 text-purple-400" />
+                </div>
+                <span className="group-hover:text-white transition-colors duration-300">+91 98765 43210</span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Mail className="h-4 w-4" />
-                <span>info@Sonargaon.com</span>
+              <div className="flex items-center gap-3 text-sm group">
+                <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500/20 to-purple-500/20 group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all duration-300">
+                  <Mail className="h-4 w-4 text-indigo-400" />
+                </div>
+                <span className="group-hover:text-white transition-colors duration-300">info@Sonargaon.com</span>
               </div>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-secondary">Quick Links</h4>
+            <h4 className="text-lg font-semibold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Quick Links</h4>
             <ul className="space-y-2">
-              {quickLinks.map((link) => (
+              {quickLinks.map((link, index) => (
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    className="text-primary-foreground/80 hover:text-secondary transition-colors duration-200 text-sm"
+                    className="text-slate-300 hover:text-white transition-all duration-300 text-sm relative group inline-block"
+                    style={{
+                      animationDelay: `${index * 50}ms`,
+                    }}
                   >
-                    {link.name}
+                    <span className="relative z-10 group-hover:translate-x-1 transition-transform duration-300 inline-block">
+                      {link.name}
+                    </span>
+                    <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-400 group-hover:w-full transition-all duration-300"></div>
                   </a>
                 </li>
               ))}
@@ -61,40 +76,45 @@ export function Footer() {
 
           {/* Emergency Contacts */}
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-secondary">Emergency Contacts</h4>
-            <ul className="space-y-2 text-sm">
-              <li className="flex justify-between">
-                <span>Security Gate:</span>
-                <span className="font-mono">99999</span>
+            <h4 className="text-lg font-semibold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Emergency Contacts</h4>
+            <ul className="space-y-3 text-sm">
+              <li className="flex justify-between items-center group">
+                <span className="text-slate-300 group-hover:text-white transition-colors duration-300">Security Gate:</span>
+                <span className="font-mono bg-gradient-to-r from-blue-500/20 to-purple-500/20 px-2 py-1 rounded group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all duration-300">99999</span>
               </li>
-              <li className="flex justify-between">
-                <span>Maintenance:</span>
-                <span className="font-mono">99998</span>
+              <li className="flex justify-between items-center group">
+                <span className="text-slate-300 group-hover:text-white transition-colors duration-300">Maintenance:</span>
+                <span className="font-mono bg-gradient-to-r from-blue-500/20 to-purple-500/20 px-2 py-1 rounded group-hover:from-blue-500/30 group-hover:to-purple-500/30 transition-all duration-300">99998</span>
               </li>
-              <li className="flex justify-between">
-                <span>Medical:</span>
-                <span className="font-mono">108</span>
+              <li className="flex justify-between items-center group">
+                <span className="text-slate-300 group-hover:text-white transition-colors duration-300">Medical:</span>
+                <span className="font-mono bg-gradient-to-r from-red-500/20 to-red-400/20 px-2 py-1 rounded group-hover:from-red-500/30 group-hover:to-red-400/30 transition-all duration-300">108</span>
               </li>
-              <li className="flex justify-between">
-                <span>Fire Emergency:</span>
-                <span className="font-mono">101</span>
+              <li className="flex justify-between items-center group">
+                <span className="text-slate-300 group-hover:text-white transition-colors duration-300">Fire Emergency:</span>
+                <span className="font-mono bg-gradient-to-r from-red-500/20 to-orange-400/20 px-2 py-1 rounded group-hover:from-red-500/30 group-hover:to-orange-400/30 transition-all duration-300">101</span>
               </li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-primary-foreground/20 mt-8 pt-8">
+        <div className="border-t border-purple-500/20 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-primary-foreground/80 text-sm">
+            <p className="text-slate-300 text-sm">
               © {currentYear} Sonar Gaon Bungalow Project. All rights reserved.
             </p>
-            <p className="text-primary-foreground/60 text-sm flex items-center gap-1">
-              Made with <Heart className="h-4 w-4 text-red-400" /> for our community
+            <p className="text-slate-400 text-sm flex items-center gap-1 group">
+              Made with 
+              <Heart className="h-4 w-4 text-red-400 group-hover:scale-110 transition-transform duration-300" /> 
+              for our community
             </p>
           </div>
         </div>
       </div>
+
+      {/* Bottom decorative border */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500"></div>
     </footer>
   );
 }
