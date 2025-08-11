@@ -1,5 +1,5 @@
 import { db } from '../firebase';
-import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, serverTimestamp } from 'firebase/firestore';
 
 // ============================
 // EVENT FUNCTIONS
@@ -176,6 +176,65 @@ export const fetchAnnouncements = async () => {
   } catch (e) {
     console.error("Error fetching announcements: ", e);
     throw e;
+  }
+};
+
+// ============================
+// CONTACT FUNCTIONS
+// ============================
+
+// Fetch all contacts from Firestore
+export const fetchContacts = async () => {
+  try {
+    const contactsCollection = collection(db, 'contacts');
+    const snapshot = await getDocs(contactsCollection);
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error('Error fetching contacts:', error);
+    throw error;
+  }
+};
+
+// Create a new contact in Firestore
+export const createContact = async (contactData) => {
+  try {
+    const contactsCollection = collection(db, 'contacts');
+    const docRef = await addDoc(contactsCollection, {
+      ...contactData,
+      createdAt: serverTimestamp()
+    });
+    return docRef.id;
+  } catch (error) {
+    console.error('Error creating contact:', error);
+    throw error;
+  }
+};
+
+// Update an existing contact in Firestore
+export const updateContact = async (contactId, contactData) => {
+  try {
+    const contactRef = doc(db, 'contacts', contactId);
+    await updateDoc(contactRef, {
+      ...contactData,
+      updatedAt: serverTimestamp()
+    });
+  } catch (error) {
+    console.error('Error updating contact:', error);
+    throw error;
+  }
+};
+
+// Delete a contact from Firestore
+export const deleteContact = async (contactId) => {
+  try {
+    const contactRef = doc(db, 'contacts', contactId);
+    await deleteDoc(contactRef);
+  } catch (error) {
+    console.error('Error deleting contact:', error);
+    throw error;
   }
 };
 

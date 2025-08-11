@@ -108,38 +108,9 @@ export function About() {
             </CardContent>
           </Card>
           
-          {/* <div className="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl p-6 border border-blue-200/50">
-            <div className="flex items-center gap-3 mb-4"> */}
-              {/* <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-white" />
-              </div> */}
-              {/* <div>
-                <h3 className="font-semibold text-slate-800">Prime Location Benefits</h3>
-                <p className="text-sm text-slate-600">Strategic positioning for modern living</p>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="flex items-center gap-2 text-slate-700">
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                <span>Easy highway access</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-700">
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                <span>Near shopping centers</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-700">
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                <span>Quality schools nearby</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-700">
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                <span>Medical facilities</span>
-              </div> */}
+        
             </div>
           </div>
-        {/* </div>
-      </div> */}
 
       {/* Custom animations */}
       <style dangerouslySetInnerHTML={{
