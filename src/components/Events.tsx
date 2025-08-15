@@ -3,7 +3,9 @@ import { Section } from "@/components/ui/section";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, MapPin, Users, Megaphone, Sparkles } from "lucide-react";
-import { fetchEvents, fetchAnnouncements } from "../data/firebaseServices"; // Add fetchAnnouncements
+import { fetchEvents, fetchAnnouncements } from "../data/firebaseServices";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const typeColors = {
   Cultural: {
@@ -47,11 +49,33 @@ const announcementTypeColors = {
   }
 };
 
+// Skeleton Loader Component
+function SkeletonCard({ lines = 3 }) {
+  return (
+    <Card className="border-0 shadow-md">
+      <CardHeader>
+        <div className="h-5 w-1/2 bg-slate-200 rounded animate-pulse mb-2"></div>
+        <div className="h-4 w-1/4 bg-slate-200 rounded animate-pulse"></div>
+      </CardHeader>
+      <CardContent>
+        {Array.from({ length: lines }).map((_, idx) => (
+          <div key={idx} className="h-4 bg-slate-200 rounded animate-pulse mb-2"></div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
 export function Events() {
   const [events, setEvents] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
+
+  useEffect(() => {
+    // Initialize AOS animations
+    AOS.init({ duration: 800, once: true });
+  }, []);
 
   useEffect(() => {
     const loadEvents = async () => {
@@ -89,7 +113,7 @@ export function Events() {
         const announcementsData = await fetchAnnouncements();
         const formattedAnnouncements = announcementsData.map((a) => ({
           ...a,
-          date: a.date?.seconds 
+          date: a.date?.seconds
             ? new Date(a.date.seconds * 1000).toLocaleDateString()
             : a.date,
         }));
@@ -106,14 +130,17 @@ export function Events() {
   }, []);
 
   return (
-    <Section id="events" className="relative bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50 overflow-hidden">
+    <Section
+      id="events"
+      className="relative bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50 overflow-hidden"
+    >
       {/* Background Elements */}
       <div className="absolute top-16 right-16 w-40 h-40 bg-gradient-to-br from-purple-200/20 to-pink-300/20 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-20 left-20 w-32 h-32 bg-gradient-to-br from-blue-200/30 to-indigo-300/30 rounded-full blur-2xl animate-float" />
       <div className="absolute top-1/3 left-1/3 w-24 h-24 bg-gradient-to-br from-amber-200/25 to-orange-300/25 rounded-full blur-xl animate-bounce" />
 
       <div className="relative z-10">
-        <div className="text-center mb-16 animate-fade-in">
+        <div className="text-center mb-16 animate-fade-in" data-aos="fade-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-full border border-purple-200 mb-6">
             <Sparkles className="w-4 h-4 text-purple-600" />
             <span className="text-sm font-medium text-purple-800">Community Updates</span>
@@ -129,7 +156,7 @@ export function Events() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Events Section */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2" data-aos="fade-right">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-white" />
@@ -138,7 +165,11 @@ export function Events() {
             </div>
 
             {loadingEvents ? (
-              <p className="text-center text-slate-600">Loading events...</p>
+              <div className="space-y-6">
+                {[...Array(3)].map((_, i) => (
+                  <SkeletonCard key={i} lines={3} />
+                ))}
+              </div>
             ) : events.length === 0 ? (
               <p className="text-center text-slate-600">No upcoming events found.</p>
             ) : (
@@ -148,6 +179,8 @@ export function Events() {
                     key={event.id || index}
                     className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white"
                     style={{ animationDelay: `${index * 0.1}s` }}
+                    data-aos="fade-up"
+                    data-aos-delay={index * 100}
                   >
                     <div
                       className={`absolute inset-0 bg-gradient-to-br ${
@@ -217,7 +250,7 @@ export function Events() {
           </div>
 
           {/* Announcements */}
-          <div>
+          <div data-aos="fade-left">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center">
                 <Megaphone className="w-5 h-5 text-white" />
@@ -226,7 +259,11 @@ export function Events() {
             </div>
             
             {loadingAnnouncements ? (
-              <p className="text-slate-500 text-sm">Loading announcements...</p>
+              <div className="space-y-4">
+                {[...Array(2)].map((_, i) => (
+                  <SkeletonCard key={i} lines={2} />
+                ))}
+              </div>
             ) : announcements.length === 0 ? (
               <p className="text-slate-500 text-sm">No announcements available yet.</p>
             ) : (
@@ -235,6 +272,8 @@ export function Events() {
                   <Card
                     key={announcement.id || index}
                     className="group relative overflow-hidden border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                    data-aos="fade-up"
+                    data-aos-delay={index * 100}
                   >
                     <div
                       className={`absolute inset-0 bg-gradient-to-br ${
@@ -269,7 +308,11 @@ export function Events() {
               </div>
             )}
 
-            <Card className="mt-6 bg-gradient-primary shadow-glow animate-float">
+            <Card
+              className="mt-6 bg-gradient-primary shadow-glow animate-float"
+              data-aos="zoom-in"
+              data-aos-delay="200"
+            >
               <CardContent className="p-6 text-center">
                 <Users className="h-8 w-8 text-primary-foreground mx-auto mb-3" />
                 <h4 className="font-semibold text-primary-foreground mb-2">

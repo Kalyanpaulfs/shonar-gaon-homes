@@ -594,32 +594,6 @@ export function Contact() {
             </Card>
           )}
         </div>
-
-        {/* Address */}
-        <div className="mt-10">
-          <Card className="group relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <CardContent className="relative p-6">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg group-hover:scale-110 transition-transform duration-300 shadow-md">
-                  <MapPin className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-slate-800 mb-3 group-hover:text-slate-900 transition-colors duration-300">
-                    Society Address
-                  </h4>
-                  <p className="text-sm text-slate-600 leading-relaxed group-hover:text-slate-700 transition-colors duration-300">
-                    Sonar Gaon Bungalow Project,<br />
-                    Sector 12, New Town,<br />
-                    Kolkata - 700156,<br />
-                    West Bengal, India
-                  </p>
-                </div>
-              </div>
-              <div className="absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-green-400 to-emerald-500 group-hover:w-full transition-all duration-700 ease-out"></div>
-            </CardContent>
-          </Card>
-        </div>
       </div>
 
       {/* Detail Modal */}

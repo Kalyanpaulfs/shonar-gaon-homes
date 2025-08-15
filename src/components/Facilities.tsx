@@ -1,3 +1,7 @@
+import { useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 import { Section } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
@@ -64,6 +68,14 @@ const facilities = [
 ];
 
 export function Facilities() {
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      easing: "ease-out",
+      once: false, // animations happen every time you scroll up/down
+    });
+  }, []);
+
   return (
     <Section id="facilities" className="relative bg-gradient-to-br from-slate-50 via-white to-blue-50 overflow-hidden">
       {/* Background decorative elements */}
@@ -72,13 +84,13 @@ export function Facilities() {
       <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-br from-pink-200/25 to-rose-300/25 rounded-full blur-xl animate-bounce"></div>
 
       <div className="relative z-10">
-        <div className="text-center mb-16 animate-fade-in">
+        <div className="text-center mb-16" data-aos="fade-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full border border-indigo-200 mb-6">
             <Sparkles className="w-4 h-4 text-indigo-600" />
             <span className="text-sm font-medium text-indigo-800">Premium Amenities</span>
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-800 via-indigo-800 to-purple-800 bg-clip-text text-transparent mb-6 leading-tight">
+          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-800 via-indigo-800 to-purple-800 bg-clip-text text-transparent mb-6 leading-snug pb-1">
             Facilities & Amenities
           </h2>
           
@@ -95,7 +107,8 @@ export function Facilities() {
             <Card 
               key={facility.title} 
               className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 bg-white"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              data-aos="zoom-in-up"
+              data-aos-delay={index * 100}
             >
               {/* Card background gradient */}
               <div className={`absolute inset-0 bg-gradient-to-br ${facility.bgColor} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
@@ -128,12 +141,11 @@ export function Facilities() {
         </div>
 
         {/* Enhanced Community Section */}
-        <div className="text-center animate-fade-in">
+        <div className="text-center" data-aos="fade-up">
           <Card className="relative overflow-hidden border-0 shadow-2xl max-w-4xl mx-auto bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600">
             {/* Animated background pattern */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1)_0%,transparent_50%)] animate-pulse"></div>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,255,255,0.1)_0%,transparent_50%)] animate-pulse" style={{animationDelay: '1s'}}></div>
-            
           </Card>
         </div>
       </div>
@@ -141,20 +153,10 @@ export function Facilities() {
       {/* Custom animations */}
       <style dangerouslySetInnerHTML={{
         __html: `
-          @keyframes fade-in {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          
           @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(5deg); }
           }
-          
-          .animate-fade-in {
-            animation: fade-in 0.8s ease-out;
-          }
-          
           .animate-float {
             animation: float 6s ease-in-out infinite;
           }

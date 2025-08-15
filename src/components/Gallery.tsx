@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Section } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Camera, Upload, Sparkles } from "lucide-react";
+import { Camera, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { galleryItems } from "@/data/galleryData";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const categories = ["All", "Festival", "Cultural", "Sports", "Landscape", "National"];
 
@@ -40,6 +42,14 @@ export function Gallery() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [filteredItems, setFilteredItems] = useState(galleryItems);
 
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      easing: "ease-out-cubic",
+      once: true
+    });
+  }, []);
+
   const handleCategoryFilter = (category) => {
     setSelectedCategory(category);
     if (category === "All") {
@@ -50,34 +60,42 @@ export function Gallery() {
   };
 
   return (
-    <Section id="gallery" className="relative bg-gradient-to-br from-slate-50 via-white to-blue-50 overflow-hidden">
+    <Section
+      id="gallery"
+      className="relative bg-gradient-to-br from-slate-50 via-white to-blue-50 overflow-hidden"
+    >
       {/* Background decorative elements */}
       <div className="absolute top-20 right-20 w-40 h-40 bg-gradient-to-br from-indigo-200/20 to-purple-300/20 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-32 left-16 w-32 h-32 bg-gradient-to-br from-amber-200/30 to-orange-300/30 rounded-full blur-2xl animate-float"></div>
       <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-br from-pink-200/25 to-rose-300/25 rounded-full blur-xl animate-bounce"></div>
 
       <div className="relative z-10">
-        <div className="text-center mb-16 animate-fade-in">
+        <div
+          className="text-center mb-16"
+          data-aos="fade-up"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full border border-indigo-200 mb-6">
             <Sparkles className="w-4 h-4 text-indigo-600" />
             <span className="text-sm font-medium text-indigo-800">Community Memories</span>
           </div>
-          
+
           <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-800 via-indigo-800 to-purple-800 bg-clip-text text-transparent mb-6 leading-tight">
             Community Gallery
           </h2>
-          
+
           <div className="w-24 h-1 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full mx-auto mb-6"></div>
-          
+
           <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-8 leading-relaxed">
             Capturing precious moments of our community life, festivals, and celebrations.
           </p>
-          
-          
         </div>
 
         {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12 animate-slide-up">
+        <div
+          className="flex flex-wrap justify-center gap-3 mb-12"
+          data-aos="fade-up"
+          data-aos-delay="100"
+        >
           {categories.map((category, index) => (
             <Button
               key={category}
@@ -89,9 +107,6 @@ export function Gallery() {
                   ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg hover:shadow-xl"
                   : "text-slate-600 border-slate-300 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:border-indigo-300"
               }`}
-              style={{
-                animationDelay: `${index * 50}ms`,
-              }}
             >
               {category}
             </Button>
@@ -101,10 +116,11 @@ export function Gallery() {
         {/* Gallery Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item, index) => (
-            <Card 
-              key={item.id} 
-              className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 bg-white animate-fade-in"
-              style={{ animationDelay: `${index * 0.1}s` }}
+            <Card
+              key={item.id}
+              className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 bg-white"
+              data-aos="zoom-in"
+              data-aos-delay={index * 100}
             >
               <div className="relative aspect-video overflow-hidden">
                 <img
@@ -112,13 +128,15 @@ export function Gallery() {
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                
+
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                
+
                 {/* Category badge */}
                 <div className="absolute top-4 right-4">
-                  <Badge className={`${categoryColors[item.category as keyof typeof categoryColors].badge} shadow-lg group-hover:scale-105 transition-transform duration-300`}>
+                  <Badge
+                    className={`${categoryColors[item.category as keyof typeof categoryColors].badge} shadow-lg group-hover:scale-105 transition-transform duration-300`}
+                  >
                     {item.category}
                   </Badge>
                 </div>
@@ -134,9 +152,11 @@ export function Gallery() {
                 </div>
 
                 {/* Card background gradient on hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${categoryColors[item.category as keyof typeof categoryColors].bg} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${categoryColors[item.category as keyof typeof categoryColors].bg} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+                ></div>
               </div>
-              
+
               <CardContent className="p-4 relative">
                 <h3 className="font-semibold text-slate-800 mb-2 group-hover:text-slate-900 transition-colors duration-300">
                   {item.title}
@@ -146,17 +166,23 @@ export function Gallery() {
                 </p>
 
                 {/* Bottom accent line */}
-                <div className={`absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r ${categoryColors[item.category as keyof typeof categoryColors].accent} group-hover:w-full transition-all duration-700 ease-out`}></div>
+                <div
+                  className={`absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r ${categoryColors[item.category as keyof typeof categoryColors].accent} group-hover:w-full transition-all duration-700 ease-out`}
+                ></div>
               </CardContent>
             </Card>
           ))}
         </div>
 
         {/* Load More */}
-        <div className="text-center mt-12 animate-fade-in">
-          <Button 
-            variant="outline" 
-            size="lg" 
+        <div
+          className="text-center mt-12"
+          data-aos="fade-up"
+          data-aos-delay="200"
+        >
+          <Button
+            variant="outline"
+            size="lg"
             className="px-8 py-3 bg-white border-slate-300 text-slate-600 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:border-indigo-300 hover:text-slate-800 transition-all duration-300 group shadow-lg hover:shadow-xl"
           >
             <Camera className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform duration-300" />
@@ -164,40 +190,6 @@ export function Gallery() {
           </Button>
         </div>
       </div>
-
-      {/* Custom animations */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-          @keyframes fade-in {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          
-          @keyframes slide-up {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          
-          @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-          }
-          
-          .animate-fade-in {
-            animation: fade-in 0.8s ease-out;
-          }
-          
-          .animate-slide-up {
-            animation: slide-up 0.6s ease-out;
-          }
-          
-          .animate-float {
-            animation: float 6s ease-in-out infinite;
-          }
-        `,
-        }}
-      />
     </Section>
   );
 }
