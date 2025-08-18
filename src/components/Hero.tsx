@@ -29,11 +29,11 @@ export function Hero() {
           className="w-full h-full object-cover"
           data-aos="zoom-in"
         />
-        <div
+        {/* <div
           className="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-indigo-900/40 to-purple-900/50"
           data-aos="fade-in"
           data-aos-delay="200"
-        ></div>
+        ></div> */}
       </div>
 
       {/* Content */}

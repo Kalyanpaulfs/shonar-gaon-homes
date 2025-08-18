@@ -22,6 +22,8 @@ import {
   ChevronRight
 } from "lucide-react";
 import { fetchContacts } from "@/data/firebaseServices";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 type CommitteeItem = {
   name: string;
@@ -80,6 +82,15 @@ export function Contact() {
     if (p.includes("security") || p.includes("treasurer")) return Shield;
     return User;
   };
+
+  // Initialize AOS animation
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      easing: "ease-out"
+    });
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -224,7 +235,7 @@ export function Contact() {
 
       <div className="relative z-10">
         {/* Header */}
-        <div className="text-center mb-16 animate-fade-in">
+        <div className="text-center mb-16 animate-fade-in" data-aos="fade-down">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-full border border-purple-200 mb-6">
             <Sparkles className="w-4 h-4 text-purple-600" />
             <span className="text-sm font-medium text-purple-800">Get In Touch</span>
@@ -241,7 +252,7 @@ export function Contact() {
         {/* Left: Message form | Right: Committee & Emergency */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contact Form */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2" data-aos="fade-right">
             <Card className="group relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white animate-slide-up">
               <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-indigo-500"></div>
@@ -291,7 +302,7 @@ export function Contact() {
           </div>
 
           {/* Committee & Emergency */}
-          <div className="space-y-6">
+          <div className="space-y-6" data-aos="fade-left">
             {/* Committee */}
             <Card className="group relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white animate-fade-in">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -305,7 +316,7 @@ export function Contact() {
                   <div className="p-4 text-sm text-slate-500">Loading committee...</div>
                 ) : committeeFromDb.length ? (
                   committeeFromDb.map((member, index) => (
-                    <div key={`${member.name}-${index}`} className="group/member relative overflow-hidden p-4 bg-white rounded-lg border border-slate-100 hover:shadow-lg transition-all duration-300">
+                    <div key={`${member.name}-${index}`} className="group/member relative overflow-hidden p-4 bg-white rounded-lg border border-slate-100 hover:shadow-lg transition-all duration-300" data-aos="zoom-in-up">
                       <div className={`absolute inset-0 bg-gradient-to-br ${member.bgColor} opacity-0 group-hover/member:opacity-100 transition-opacity duration-300`}></div>
                       <div className="relative flex items-start gap-3">
                         <div className={`p-2 bg-gradient-to-br ${member.color} rounded-lg group-hover/member:scale-110 transition-transform duration-300 shadow-md`}>
@@ -331,7 +342,7 @@ export function Contact() {
             </Card>
 
             {/* Emergency */}
-            <Card className="group relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white animate-fade-in">
+            <Card className="group relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white animate-fade-in" data-aos="zoom-in">
               <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-orange-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <CardHeader className="relative">
                 <CardTitle className="text-xl bg-gradient-to-r from-slate-800 to-red-800 bg-clip-text text-transparent">
@@ -343,7 +354,7 @@ export function Contact() {
                   <div className="p-3 text-sm text-slate-500">Loading emergency contacts...</div>
                 ) : emergencyFromDb.length ? (
                   emergencyFromDb.map((contact, index) => (
-                    <div key={`${contact.service}-${index}`} className="group/emergency flex justify-between items-center p-3 bg-white rounded-lg border border-slate-100 hover:shadow-md transition-all duration-300">
+                    <div key={`${contact.service}-${index}`} className="group/emergency flex justify-between items-center p-3 bg-white rounded-lg border border-slate-100 hover:shadow-md transition-all duration-300" data-aos="fade-right">
                       <div className="flex items-center gap-2">
                         <Shield className="h-4 w-4 text-red-500" />
                         <span className="text-sm font-medium text-slate-700">{contact.service}</span>
@@ -362,7 +373,7 @@ export function Contact() {
         </div>
 
         {/* Directory */}
-        <div className="mt-10 space-y-4">
+        <div className="mt-10 space-y-4" data-aos="fade-up">
           {/* Tabs + Search (separate searches for vendors/staff) */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
@@ -432,7 +443,7 @@ export function Contact() {
 
           {/* VENDORS: 4 visible with arrows */}
           {dirTab === "vendors" && (
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 shadow-lg" data-aos="zoom-in-up">
               <CardContent className="p-4 md:p-6">
                 {loadingContacts ? (
                   <div className="p-4 text-sm text-slate-500">Loading vendors...</div>
@@ -445,6 +456,7 @@ export function Contact() {
                         <div
                           key={`${item.name}-${vendorStart + i}`}
                           className="p-4 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 transition-all shadow-sm hover:shadow-md"
+                          data-aos="fade-up"
                         >
                           <div className="flex items-start gap-3">
                             <Avatar
@@ -514,7 +526,7 @@ export function Contact() {
 
           {/* STAFF: 4 visible with arrows (same behavior as vendors) */}
           {dirTab === "staff" && (
-            <Card className="border-0 shadow-lg">
+            <Card className="border-0 shadow-lg" data-aos="zoom-in-up">
               <CardContent className="p-4 md:p-6">
                 {loadingContacts ? (
                   <div className="p-4 text-sm text-slate-500">Loading staff...</div>
@@ -527,6 +539,7 @@ export function Contact() {
                         <div
                           key={`${item.name}-${staffStart + i}`}
                           className="p-4 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 transition-all shadow-sm hover:shadow-md"
+                          data-aos="fade-up"
                         >
                           <div className="flex items-start gap-3">
                             <Avatar
@@ -598,7 +611,7 @@ export function Contact() {
 
       {/* Detail Modal */}
       {detailOpen && detailItem && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4" data-aos="fade-in">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b">
               <div className="flex items-center gap-2">
