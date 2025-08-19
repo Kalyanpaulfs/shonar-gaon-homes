@@ -1,10 +1,10 @@
-// src/firebase.ts
-
+// firebase.ts
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
+import { getAuth } from 'firebase/auth';
 
-// Firebase configuration from Firebase Console
+// Your Firebase config object
 const firebaseConfig = {
   apiKey: "AIzaSyCxoJbhUcPbqlhm4jt8351ebjogTITV1L4",
   authDomain: "sonargaon-b5f7e.firebaseapp.com",
@@ -18,6 +18,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Export Firebase services
-export const auth = getAuth(app);    // Firebase Auth service
-export const db = getFirestore(app); // Firestore service
+// Initialize Firebase services
+export const db = getFirestore(app);
+export const storage = getStorage(app);
+export const auth = getAuth(app);
+
+export default app;

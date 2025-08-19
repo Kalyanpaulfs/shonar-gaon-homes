@@ -5,7 +5,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 // Replace the path below with the actual path to your hero image file
-import heroImage from "@/assets/hero-community.jpg";
+import heroImage from "@/assets/Sonar_gaon.png";
 
 export function Hero() {
   useEffect(() => {
@@ -29,16 +29,17 @@ export function Hero() {
           className="w-full h-full object-cover"
           data-aos="zoom-in"
         />
-        {/* <div
-          className="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-indigo-900/40 to-purple-900/50"
+        {/* Enhanced overlay for better text readability */}
+        <div
+          className="absolute inset-0 bg-gradient-to-br from-slate-900/75 via-slate-800/65 to-slate-900/80"
           data-aos="fade-in"
           data-aos-delay="200"
-        ></div> */}
+        ></div>
       </div>
 
       {/* Content */}
       <div
-        className="relative z-10 text-center text-white px-4 md:px-6 lg:px-8"
+        className="relative z-10 text-center px-4 md:px-6 lg:px-8"
         data-aos="fade-up"
       >
         <div className="max-w-4xl mx-auto animate-fade-in">
@@ -47,16 +48,16 @@ export function Hero() {
             data-aos="fade-up"
             data-aos-delay="200"
           >
-            <span className="block bg-gradient-to-r from-amber-300 via-yellow-200 to-gold-300 bg-clip-text text-transparent drop-shadow-2xl">
+            <span className="block bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] filter brightness-110">
               Sonar Gaon
             </span>
-            <span className="block text-lg md:text-xl lg:text-2xl font-normal mt-2 text-amber-200">
+            <span className="block text-lg md:text-xl lg:text-2xl font-normal mt-2 text-amber-200 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
               Bungalow Project
             </span>
           </h1>
 
           <p
-            className="text-xl md:text-2xl lg:text-3xl mb-8 font-serif italic text-blue-200 drop-shadow-md"
+            className="text-xl md:text-2xl lg:text-3xl mb-8 font-serif italic text-cyan-100 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
             data-aos="fade-up"
             data-aos-delay="300"
           >
@@ -64,7 +65,7 @@ export function Hero() {
           </p>
 
           <p
-            className="text-lg md:text-xl mb-12 text-slate-200 max-w-2xl mx-auto leading-relaxed drop-shadow-sm"
+            className="text-lg md:text-xl mb-12 text-gray-100 max-w-2xl mx-auto leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
             data-aos="fade-up"
             data-aos-delay="400"
           >
@@ -79,7 +80,7 @@ export function Hero() {
           >
             <Button
               size="lg"
-              className="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-semibold px-8 py-4 text-lg shadow-xl transform hover:scale-105 transition-all duration-300 border-0"
+              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold px-8 py-4 text-lg shadow-[0_4px_20px_rgba(245,158,11,0.4)] transform hover:scale-105 transition-all duration-300 border-0 hover:shadow-[0_6px_25px_rgba(245,158,11,0.5)]"
               onClick={() =>
                 document.getElementById("about")?.scrollIntoView({
                   behavior: "smooth",
@@ -91,7 +92,7 @@ export function Hero() {
             <Button
               variant="outline"
               size="lg"
-              className="border-2 border-blue-300 text-blue-300 hover:bg-blue-300 hover:text-slate-900 font-semibold px-8 py-4 text-lg shadow-lg backdrop-blur-sm bg-white/10 transform hover:scale-105 transition-all duration-300"
+              className="border-2 border-cyan-300 text-cyan-100 hover:bg-cyan-300 hover:text-slate-900 font-semibold px-8 py-4 text-lg shadow-[0_4px_15px_rgba(0,0,0,0.3)] backdrop-blur-md bg-slate-900/30 transform hover:scale-105 transition-all duration-300 hover:shadow-[0_6px_20px_rgba(103,232,249,0.3)]"
               onClick={() =>
                 document.getElementById("contact")?.scrollIntoView({
                   behavior: "smooth",
@@ -104,28 +105,28 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Floating elements for visual interest */}
+      {/* Enhanced floating elements with better visibility */}
       <div
-        className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-amber-300/20 to-yellow-400/20 rounded-full blur-xl animate-float"
+        className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-amber-400/30 to-orange-400/30 rounded-full blur-xl animate-float shadow-[0_0_30px_rgba(245,158,11,0.3)]"
         data-aos="fade-right"
       ></div>
       <div
-        className="absolute top-40 right-20 w-32 h-32 bg-gradient-to-br from-blue-300/15 to-indigo-400/15 rounded-full blur-2xl animate-pulse"
+        className="absolute top-40 right-20 w-32 h-32 bg-gradient-to-br from-cyan-300/25 to-blue-400/25 rounded-full blur-2xl animate-pulse shadow-[0_0_40px_rgba(103,232,249,0.2)]"
         data-aos="fade-left"
       ></div>
       <div
-        className="absolute bottom-32 left-20 w-16 h-16 bg-gradient-to-br from-purple-300/25 to-pink-400/25 rounded-full blur-lg animate-bounce"
+        className="absolute bottom-32 left-20 w-16 h-16 bg-gradient-to-br from-purple-400/35 to-pink-400/35 rounded-full blur-lg animate-bounce shadow-[0_0_25px_rgba(168,85,247,0.3)]"
         data-aos="fade-right"
       ></div>
 
-      {/* Scroll Indicator */}
+      {/* Enhanced Scroll Indicator */}
       <div
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
         data-aos="fade-up"
         data-aos-delay="600"
       >
-        <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 shadow-lg">
-          <ArrowDown className="h-6 w-6 text-blue-300" />
+        <div className="bg-slate-900/40 backdrop-blur-md rounded-full p-3 shadow-[0_4px_15px_rgba(0,0,0,0.4)] border border-cyan-300/30">
+          <ArrowDown className="h-6 w-6 text-cyan-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" />
         </div>
       </div>
 

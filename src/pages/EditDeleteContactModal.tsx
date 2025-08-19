@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { updateContact, deleteContact } from '../data/firebaseServices';
+import { Save, X, Trash2, AlertTriangle, User } from 'lucide-react';
 
 const EditDeleteContactModal = ({ isOpen, onClose, onSuccess, contactTypes, contact }) => {
   const [formData, setFormData] = useState({
@@ -11,10 +12,9 @@ const EditDeleteContactModal = ({ isOpen, onClose, onSuccess, contactTypes, cont
     image: '',
     description: ''
   });
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  // Populate form data when contact changes
   useEffect(() => {
     if (contact) {
       setFormData({
@@ -29,184 +29,284 @@ const EditDeleteContactModal = ({ isOpen, onClose, onSuccess, contactTypes, cont
     }
   }, [contact, contactTypes]);
 
-  const handleSubmit = async (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    if (!contact?.id) return;
     
+    // Validate form
+    if (!formData.name || !formData.position || !formData.type || !formData.phone || !formData.email) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
     try {
-      setLoading(true);
+      setIsSubmitting(true);
       await updateContact(contact.id, formData);
       onSuccess();
     } catch (error) {
       console.error('Error updating contact:', error);
+      alert('Error updating contact. Please try again.');
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!contact?.id) return;
-    
     try {
-      setLoading(true);
+      setIsSubmitting(true);
       await deleteContact(contact.id);
-      onSuccess();
       setShowDeleteConfirm(false);
+      onSuccess();
     } catch (error) {
       console.error('Error deleting contact:', error);
+      alert('Error deleting contact. Please try again.');
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    if (!isSubmitting) {
+      setShowDeleteConfirm(false);
+      onClose();
     }
   };
 
   if (!isOpen || !contact) return null;
 
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-slate-800">Edit Contact</h2>
-          <button
-            onClick={() => setShowDeleteConfirm(true)}
-            className="text-red-600 hover:text-red-700 text-sm font-medium"
-            disabled={loading}
-          >
-            Delete
-          </button>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Name
-            </label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Position
-            </label>
-            <input
-              type="text"
-              value={formData.position}
-              onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Type
-            </label>
-            <select
-              value={formData.type}
-              onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            >
-              {contactTypes.map(type => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Phone
-            </label>
-            <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Description
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              rows={3}
-            />
-          </div>
-
-          <div className="flex justify-end gap-3 mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-              disabled={loading}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-            >
-              {loading ? 'Updating...' : 'Update Contact'}
-            </button>
-          </div>
-        </form>
-
-        {/* Delete Confirmation Modal */}
-        {showDeleteConfirm && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-60">
-            <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4">
-              <h3 className="text-lg font-semibold text-slate-800 mb-2">
-                Delete Contact
-              </h3>
-              <p className="text-slate-600 mb-6">
-                Are you sure you want to delete "{contact.name}"? This action cannot be undone.
-              </p>
-              <div className="flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowDeleteConfirm(false)}
-                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                  disabled={loading}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDelete}
-                  disabled={loading}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
-                >
-                  {loading ? 'Deleting...' : 'Delete'}
-                </button>
+  // Delete confirmation dialog
+  if (showDeleteConfirm) {
+    return (
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-2 sm:mx-auto">
+          {/* Delete Header */}
+          <div className="bg-gradient-to-r from-red-600 to-rose-600 p-4 sm:p-6 rounded-t-2xl">
+            <div className="flex items-center justify-between text-white">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6" />
+                <h3 className="text-lg sm:text-xl font-bold">Delete Contact</h3>
               </div>
+              <button 
+                onClick={() => setShowDeleteConfirm(false)} 
+                className="p-2 hover:bg-white/20 rounded-full transition-colors touch-manipulation"
+                disabled={isSubmitting}
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
           </div>
-        )}
+          
+          {/* Delete Content */}
+          <div className="p-4 sm:p-6">
+            <p className="text-slate-600 mb-3 text-sm sm:text-base">
+              Are you sure you want to delete this contact?
+            </p>
+            <div className="bg-slate-100 p-3 sm:p-4 rounded-lg mb-4 sm:mb-6">
+              <h4 className="font-semibold text-slate-800 text-sm sm:text-base">{contact.name}</h4>
+              <p className="text-xs sm:text-sm text-slate-600">{contact.position}</p>
+              <p className="text-xs sm:text-sm text-slate-500 mt-2">{contact.email}</p>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-500 mb-4 sm:mb-6">
+              This action cannot be undone.
+            </p>
+            
+            {/* Delete Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <button
+                onClick={handleDelete}
+                disabled={isSubmitting}
+                className="order-2 sm:order-1 flex-1 bg-gradient-to-r from-red-600 to-rose-600 text-white py-3 px-6 rounded-xl hover:from-red-700 hover:to-rose-700 transition-all duration-300 flex items-center justify-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation text-sm sm:text-base"
+              >
+                <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                {isSubmitting ? 'Deleting...' : 'Delete'}
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={isSubmitting}
+                className="order-1 sm:order-2 px-6 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation text-sm sm:text-base"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Edit form
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+        {/* Edit Header */}
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 sm:p-6 rounded-t-2xl">
+          <div className="flex items-center justify-between text-white">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <User className="w-5 h-5 sm:w-6 sm:h-6" />
+              <h3 className="text-lg sm:text-xl font-bold">Edit Contact</h3>
+            </div>
+            <button 
+              onClick={handleClose} 
+              className="p-2 hover:bg-white/20 rounded-full transition-colors touch-manipulation"
+              disabled={isSubmitting}
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+        
+        {/* Edit Form Content */}
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+          <form onSubmit={handleUpdate} className="space-y-4 sm:space-y-6">
+            {/* Name Field */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Enter contact name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm sm:text-base"
+                required
+                disabled={isSubmitting}
+              />
+            </div>
+            
+            {/* Position Field */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Position <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Enter position/title"
+                value={formData.position}
+                onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm sm:text-base"
+                required
+                disabled={isSubmitting}
+              />
+            </div>
+            
+            {/* Type Field */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Type <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={formData.type}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm sm:text-base appearance-none bg-white"
+                required
+                disabled={isSubmitting}
+              >
+                {contactTypes.map(type => (
+                  <option key={type.value} value={type.value}>{type.label}</option>
+                ))}
+              </select>
+            </div>
+            
+            {/* Phone and Email Grid */}
+            <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-4">
+              {/* Phone Field */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Phone <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  placeholder="Enter phone number"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm sm:text-base"
+                  required
+                  disabled={isSubmitting}
+                />
+              </div>
+              
+              {/* Email Field */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  placeholder="Enter email address"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm sm:text-base"
+                  required
+                  disabled={isSubmitting}
+                />
+              </div>
+            </div>
+            
+            {/* Image URL Field */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Image URL
+              </label>
+              <input
+                type="url"
+                placeholder="Enter image URL (optional)"
+                value={formData.image}
+                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm sm:text-base"
+                disabled={isSubmitting}
+              />
+            </div>
+            
+            {/* Description Field */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Description
+              </label>
+              <textarea
+                placeholder="Enter description (optional)"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                rows={4}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none text-sm sm:text-base"
+                disabled={isSubmitting}
+              />
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
+              {/* Update Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="order-3 sm:order-1 flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 flex items-center justify-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation text-sm sm:text-base"
+              >
+                <Save className="w-4 h-4 sm:w-5 sm:h-5" />
+                {isSubmitting ? 'Updating...' : 'Update'}
+              </button>
+              
+              {/* Delete Button */}
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(true)}
+                disabled={isSubmitting}
+                className="order-2 sm:order-2 sm:flex-shrink-0 px-4 sm:px-6 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation text-sm sm:text-base"
+              >
+                <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                Delete
+              </button>
+              
+              {/* Cancel Button */}
+              <button
+                type="button"
+                onClick={handleClose}
+                disabled={isSubmitting}
+                className="order-1 sm:order-3 sm:flex-shrink-0 px-6 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation text-sm sm:text-base"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

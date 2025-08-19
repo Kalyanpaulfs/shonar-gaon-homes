@@ -1,11 +1,274 @@
+// firebaseServices.ts - Firebase operations only
 import { db } from '../firebase';
-import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, serverTimestamp } from 'firebase/firestore';
+import { 
+  collection, 
+  addDoc, 
+  updateDoc, 
+  deleteDoc, 
+  doc, 
+  getDocs, 
+  serverTimestamp, 
+  query,
+  orderBy,
+  where,
+  Timestamp,
+  getDoc
+} from 'firebase/firestore';
+
+// ============================
+// GALLERY IMAGE INTERFACES
+// ============================
+export interface ImageData {
+  id: string;
+  title: string;
+  url: string;
+  category: string;
+  date: string;
+  publicId: string;
+  createdAt?: Date;
+}
+
+export interface UpdateFormData {
+  title: string;
+  category: string;
+  date: string;
+}
+
+const GALLERY_COLLECTION = 'gallery_images';
+
+// ============================
+// GALLERY IMAGE FIRESTORE FUNCTIONS
+// ============================
+
+/**
+ * Save image metadata to Firestore after Cloudinary upload
+ */
+export const saveImageToFirestore = async (imageData: {
+  title: string;
+  url: string;
+  category: string;
+  date: string;
+  publicId: string;
+}): Promise<ImageData> => {
+  try {
+    const docRef = await addDoc(collection(db, GALLERY_COLLECTION), {
+      ...imageData,
+      createdAt: Timestamp.now(),
+    });
+
+    return {
+      id: docRef.id,
+      ...imageData,
+      createdAt: new Date(),
+    };
+  } catch (error) {
+    console.error('Error saving image metadata to Firestore:', error);
+    throw new Error('Failed to save image metadata to database');
+  }
+};
+
+/**
+ * Fetch all gallery images from Firestore
+ */
+export const fetchGalleryImages = async (): Promise<ImageData[]> => {
+  try {
+    const q = query(
+      collection(db, GALLERY_COLLECTION),
+      orderBy('createdAt', 'desc')
+    );
+
+    const querySnapshot = await getDocs(q);
+    
+    const images: ImageData[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      images.push({
+        id: doc.id,
+        title: data.title,
+        url: data.url,
+        category: data.category,
+        date: data.date,
+        publicId: data.publicId,
+        createdAt: data.createdAt?.toDate(),
+      });
+    });
+
+    return images;
+  } catch (error) {
+    console.error('Error fetching gallery images:', error);
+    throw new Error('Failed to fetch images from database');
+  }
+};
+
+/**
+ * Fetch gallery images by category
+ */
+export const fetchGalleryImagesByCategory = async (category: string): Promise<ImageData[]> => {
+  try {
+    const q = query(
+      collection(db, GALLERY_COLLECTION),
+      where('category', '==', category),
+      orderBy('createdAt', 'desc')
+    );
+
+    const querySnapshot = await getDocs(q);
+    
+    const images: ImageData[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      images.push({
+        id: doc.id,
+        title: data.title,
+        url: data.url,
+        category: data.category,
+        date: data.date,
+        publicId: data.publicId,
+        createdAt: data.createdAt?.toDate(),
+      });
+    });
+
+    return images;
+  } catch (error) {
+    console.error('Error fetching images by category:', error);
+    throw new Error('Failed to fetch images by category');
+  }
+};
+
+/**
+ * Update image metadata in Firestore
+ */
+export const updateGalleryImage = async (imageId: string, updateData: UpdateFormData): Promise<void> => {
+  try {
+    const imageRef = doc(db, GALLERY_COLLECTION, imageId);
+    
+    await updateDoc(imageRef, {
+      title: updateData.title,
+      category: updateData.category,
+      date: updateData.date,
+      updatedAt: Timestamp.now(),
+    });
+  } catch (error) {
+    console.error('Error updating image:', error);
+    throw new Error('Failed to update image metadata');
+  }
+};
+
+/**
+ * Delete image metadata from Firestore
+ */
+export const deleteImageFromFirestore = async (imageId: string): Promise<string> => {
+  try {
+    const imageRef = doc(db, GALLERY_COLLECTION, imageId);
+    const imageDoc = await getDoc(imageRef);
+    
+    if (!imageDoc.exists()) {
+      throw new Error('Image not found in database');
+    }
+
+    const imageData = imageDoc.data();
+    const publicId = imageData.publicId;
+
+    // Delete from Firestore
+    await deleteDoc(imageRef);
+    
+    return publicId; // Return publicId for Cloudinary deletion
+  } catch (error) {
+    console.error('Error deleting image from Firestore:', error);
+    throw new Error('Failed to delete image from database');
+  }
+};
+
+/**
+ * Get a single image by ID from Firestore
+ */
+export const getGalleryImageById = async (imageId: string): Promise<ImageData | null> => {
+  try {
+    const imageRef = doc(db, GALLERY_COLLECTION, imageId);
+    const imageDoc = await getDoc(imageRef);
+    
+    if (!imageDoc.exists()) {
+      return null;
+    }
+
+    const data = imageDoc.data();
+    return {
+      id: imageDoc.id,
+      title: data.title,
+      url: data.url,
+      category: data.category,
+      date: data.date,
+      publicId: data.publicId,
+      createdAt: data.createdAt?.toDate(),
+    };
+  } catch (error) {
+    console.error('Error fetching image by ID:', error);
+    throw new Error('Failed to fetch image');
+  }
+};
+
+/**
+ * Search images by title
+ */
+export const searchGalleryImages = async (searchTerm: string): Promise<ImageData[]> => {
+  try {
+    // Firestore doesn't support full-text search natively
+    const querySnapshot = await getDocs(collection(db, GALLERY_COLLECTION));
+    
+    const images: ImageData[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const title = data.title?.toLowerCase() || '';
+      
+      if (title.includes(searchTerm.toLowerCase())) {
+        images.push({
+          id: doc.id,
+          title: data.title,
+          url: data.url,
+          category: data.category,
+          date: data.date,
+          publicId: data.publicId,
+          createdAt: data.createdAt?.toDate(),
+        });
+      }
+    });
+
+    // Sort by creation date (newest first)
+    return images.sort((a, b) => {
+      if (!a.createdAt || !b.createdAt) return 0;
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    });
+  } catch (error) {
+    console.error('Error searching images:', error);
+    throw new Error('Failed to search images');
+  }
+};
+
+/**
+ * Get images count by category
+ */
+export const getImageCountByCategory = async (): Promise<Record<string, number>> => {
+  try {
+    const querySnapshot = await getDocs(collection(db, GALLERY_COLLECTION));
+    
+    const categoryCounts: Record<string, number> = {};
+    
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const category = data.category;
+      categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+    });
+
+    return categoryCounts;
+  } catch (error) {
+    console.error('Error getting category counts:', error);
+    throw new Error('Failed to get category counts');
+  }
+};
 
 // ============================
 // EVENT FUNCTIONS
 // ============================
 
-// Create a new event in Firestore
 export const createEvent = async (eventData: { 
   title: string; 
   description: string; 
@@ -28,7 +291,6 @@ export const createEvent = async (eventData: {
   }
 };
 
-// Update an existing event
 export const updateEvent = async (eventId: string, updatedData: { 
   title?: string; 
   description?: string; 
@@ -50,7 +312,6 @@ export const updateEvent = async (eventId: string, updatedData: {
   }
 };
 
-// Delete an event from Firestore
 export const deleteEvent = async (eventId: string) => {
   const eventRef = doc(db, "events", eventId);
   try {
@@ -62,7 +323,6 @@ export const deleteEvent = async (eventId: string) => {
   }
 };
 
-// Fetch all events from Firestore
 export const fetchEvents = async () => {
   try {
     const querySnapshot = await getDocs(collection(db, "events"));
@@ -71,7 +331,6 @@ export const fetchEvents = async () => {
       events.push({ id: doc.id, ...doc.data() });
     });
     
-    // Sort events by date (newest first)
     events.sort((a, b) => {
       if (a.date && b.date) {
         return new Date(b.date).getTime() - new Date(a.date).getTime();
@@ -90,7 +349,6 @@ export const fetchEvents = async () => {
 // ANNOUNCEMENT FUNCTIONS
 // ============================
 
-// Create a new announcement in Firestore
 export const createAnnouncement = async (announcementData: { 
   title: string; 
   content: string; 
@@ -112,7 +370,6 @@ export const createAnnouncement = async (announcementData: {
   }
 };
 
-// Update an existing announcement
 export const updateAnnouncement = async (announcementId: string, updatedData: { 
   title?: string; 
   content?: string; 
@@ -133,7 +390,6 @@ export const updateAnnouncement = async (announcementId: string, updatedData: {
   }
 };
 
-// Delete an announcement from Firestore
 export const deleteAnnouncement = async (announcementId: string) => {
   const announcementRef = doc(db, "announcements", announcementId);
   try {
@@ -145,7 +401,6 @@ export const deleteAnnouncement = async (announcementId: string) => {
   }
 };
 
-// Fetch all announcements from Firestore
 export const fetchAnnouncements = async () => {
   try {
     const querySnapshot = await getDocs(collection(db, "announcements"));
@@ -154,17 +409,15 @@ export const fetchAnnouncements = async () => {
       announcements.push({ id: doc.id, ...doc.data() });
     });
     
-    // Sort announcements by priority (high -> medium -> low) and then by date (newest first)
     announcements.sort((a, b) => {
       const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
       const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] || 1;
       const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] || 1;
       
       if (aPriority !== bPriority) {
-        return bPriority - aPriority; // High priority first
+        return bPriority - aPriority;
       }
       
-      // If same priority, sort by date (newest first)
       if (a.date && b.date) {
         return new Date(b.date).getTime() - new Date(a.date).getTime();
       }
@@ -183,7 +436,6 @@ export const fetchAnnouncements = async () => {
 // CONTACT FUNCTIONS
 // ============================
 
-// Fetch all contacts from Firestore
 export const fetchContacts = async () => {
   try {
     const contactsCollection = collection(db, 'contacts');
@@ -198,8 +450,7 @@ export const fetchContacts = async () => {
   }
 };
 
-// Create a new contact in Firestore
-export const createContact = async (contactData) => {
+export const createContact = async (contactData: any) => {
   try {
     const contactsCollection = collection(db, 'contacts');
     const docRef = await addDoc(contactsCollection, {
@@ -213,8 +464,7 @@ export const createContact = async (contactData) => {
   }
 };
 
-// Update an existing contact in Firestore
-export const updateContact = async (contactId, contactData) => {
+export const updateContact = async (contactId: string, contactData: any) => {
   try {
     const contactRef = doc(db, 'contacts', contactId);
     await updateDoc(contactRef, {
@@ -227,8 +477,7 @@ export const updateContact = async (contactId, contactData) => {
   }
 };
 
-// Delete a contact from Firestore
-export const deleteContact = async (contactId) => {
+export const deleteContact = async (contactId: string) => {
   try {
     const contactRef = doc(db, 'contacts', contactId);
     await deleteDoc(contactRef);
@@ -242,7 +491,6 @@ export const deleteContact = async (contactId) => {
 // UTILITY FUNCTIONS
 // ============================
 
-// Get events by type
 export const getEventsByType = async (type: string) => {
   try {
     const events = await fetchEvents();
@@ -253,7 +501,6 @@ export const getEventsByType = async (type: string) => {
   }
 };
 
-// Get announcements by type
 export const getAnnouncementsByType = async (type: string) => {
   try {
     const announcements = await fetchAnnouncements();
@@ -264,7 +511,6 @@ export const getAnnouncementsByType = async (type: string) => {
   }
 };
 
-// Get announcements by priority
 export const getAnnouncementsByPriority = async (priority: string) => {
   try {
     const announcements = await fetchAnnouncements();
@@ -275,12 +521,11 @@ export const getAnnouncementsByPriority = async (priority: string) => {
   }
 };
 
-// Get upcoming events (events with dates >= today)
 export const getUpcomingEvents = async () => {
   try {
     const events = await fetchEvents();
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to start of day
+    today.setHours(0, 0, 0, 0);
     
     return events.filter(event => {
       if (!event.date) return false;
@@ -293,7 +538,6 @@ export const getUpcomingEvents = async () => {
   }
 };
 
-// Get recent announcements (last 30 days)
 export const getRecentAnnouncements = async (days: number = 30) => {
   try {
     const announcements = await fetchAnnouncements();
@@ -311,7 +555,6 @@ export const getRecentAnnouncements = async (days: number = 30) => {
   }
 };
 
-// Search events and announcements
 export const searchContent = async (searchTerm: string) => {
   try {
     const [events, announcements] = await Promise.all([
