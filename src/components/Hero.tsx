@@ -114,10 +114,7 @@ export function Hero() {
         className="absolute top-40 right-20 w-32 h-32 bg-gradient-to-br from-cyan-300/25 to-blue-400/25 rounded-full blur-2xl animate-pulse shadow-[0_0_40px_rgba(103,232,249,0.2)]"
         data-aos="fade-left"
       ></div>
-      <div
-        className="absolute bottom-32 left-20 w-16 h-16 bg-gradient-to-br from-purple-400/35 to-pink-400/35 rounded-full blur-lg animate-bounce shadow-[0_0_25px_rgba(168,85,247,0.3)]"
-        data-aos="fade-right"
-      ></div>
+      
 
       {/* Enhanced Scroll Indicator */}
       <div

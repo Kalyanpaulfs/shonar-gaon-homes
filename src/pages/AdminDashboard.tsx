@@ -309,7 +309,7 @@ const AdminDashboard: React.FC = () => {
               contactTypes={[
                 { value: "committee", label: "Committee" },
                 { value: "emergency", label: "Emergency" },
-                { value: "staff", label: "Staff" },
+                { value: "Services", label: "Services" },
                 { value: "vendor", label: "Vendor" },
               ]}
               loading={loading}

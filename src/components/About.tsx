@@ -1,11 +1,26 @@
+"use client";
+
 import { Section } from "@/components/ui/section";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Home, TreePine, Users } from "lucide-react";
-import { useEffect } from "react";
+import { Home, TreePine, Users } from "lucide-react";
+import { useEffect, useRef } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import CountUp from "react-countup";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 
 export function About() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref });
+
+  // Parallax movement
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, 100]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+
+  // Ref for stats section
+  const statsRef = useRef(null);
+  const isStatsInView = useInView(statsRef, { margin: "-100px" });
+
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -16,18 +31,19 @@ export function About() {
 
   return (
     <Section
+      ref={ref}
       id="about"
       className="relative bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-hidden"
     >
-      {/* Background decorative elements */}
-      <div
-        className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-br from-amber-200/30 to-yellow-300/30 rounded-full blur-2xl animate-pulse"
-        data-aos="fade-left"
-      ></div>
-      <div
-        className="absolute bottom-20 left-10 w-24 h-24 bg-gradient-to-br from-blue-200/40 to-purple-300/40 rounded-full blur-xl animate-float"
-        data-aos="fade-right"
-      ></div>
+      {/* Parallax Background Decorative elements */}
+      <motion.div
+        style={{ y: y1 }}
+        className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-br from-amber-200/30 to-yellow-300/30 rounded-full blur-2xl"
+      />
+      <motion.div
+        style={{ y: y2 }}
+        className="absolute bottom-20 left-10 w-24 h-24 bg-gradient-to-br from-blue-200/40 to-purple-300/40 rounded-full blur-xl"
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
         {/* Content */}
@@ -41,9 +57,8 @@ export function About() {
             </div>
 
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-800 via-blue-800 to-indigo-800 bg-clip-text text-transparent leading-snug pb-2">
-  About Our Society
-</h2>
-
+              About Our Society
+            </h2>
 
             <div className="w-20 h-1 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full"></div>
           </div>
@@ -63,11 +78,10 @@ export function About() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <Card
-              className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-gradient-to-br from-white to-blue-50 border-0 shadow-lg"
-              data-aos="zoom-in"
-            >
+          {/* Stats Cards */}
+          <div ref={statsRef} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Card 1 */}
+            <Card className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-gradient-to-br from-white to-blue-50 border-0 shadow-lg" data-aos="zoom-in">
               <CardContent className="p-6 text-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10">
@@ -75,7 +89,7 @@ export function About() {
                     <Home className="w-6 h-6 text-white" />
                   </div>
                   <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2 group-hover:scale-105 transition-transform duration-300">
-                    150+
+                    {isStatsInView ? <CountUp start={0} end={150} duration={3} suffix="+" /> : 0}
                   </div>
                   <div className="text-sm font-medium text-slate-600">
                     Beautiful Bungalows
@@ -84,11 +98,8 @@ export function About() {
               </CardContent>
             </Card>
 
-            <Card
-              className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-gradient-to-br from-white to-green-50 border-0 shadow-lg"
-              data-aos="zoom-in"
-              data-aos-delay="100"
-            >
+            {/* Card 2 */}
+            <Card className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-gradient-to-br from-white to-green-50 border-0 shadow-lg" data-aos="zoom-in" data-aos-delay="100">
               <CardContent className="p-6 text-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10">
@@ -96,7 +107,7 @@ export function About() {
                     <TreePine className="w-6 h-6 text-white" />
                   </div>
                   <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2 group-hover:scale-105 transition-transform duration-300">
-                    25
+                    {isStatsInView ? <CountUp start={0} end={25} duration={3} suffix=" Acres" /> : 0}
                   </div>
                   <div className="text-sm font-medium text-slate-600">
                     Acres of Greenery
@@ -105,11 +116,8 @@ export function About() {
               </CardContent>
             </Card>
 
-            <Card
-              className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-gradient-to-br from-white to-amber-50 border-0 shadow-lg sm:col-span-2"
-              data-aos="zoom-in"
-              data-aos-delay="200"
-            >
+            {/* Card 3 */}
+            <Card className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-gradient-to-br from-white to-amber-50 border-0 shadow-lg sm:col-span-2" data-aos="zoom-in" data-aos-delay="200">
               <CardContent className="p-6 text-center relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-yellow-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10">
@@ -117,7 +125,7 @@ export function About() {
                     <Users className="w-6 h-6 text-white" />
                   </div>
                   <div className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent mb-2 group-hover:scale-105 transition-transform duration-300">
-                    500+
+                    {isStatsInView ? <CountUp start={0} end={500} duration={3} suffix="+" /> : 0}
                   </div>
                   <div className="text-sm font-medium text-slate-600">
                     Happy Families
@@ -128,70 +136,31 @@ export function About() {
           </div>
         </div>
 
-        {/* Enhanced Map Section */}
+        {/* Map Section with Tilt Effect */}
         <div className="space-y-6" data-aos="fade-left">
-          <Card className="group shadow-2xl hover:shadow-3xl transition-all duration-500 hover:-translate-y-1 bg-gradient-to-br from-white to-slate-50 border-0 overflow-hidden">
-            <CardContent className="p-0 relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
-              <div className="aspect-video rounded-lg overflow-hidden relative">
-                <div className="absolute top-4 left-4 z-20 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 shadow-lg">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-xs font-medium text-slate-700">
-                      Live Location
-                    </span>
-                  </div>
-                </div>
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10352.38894679404!2d88.20978373257131!3d22.405782608781863!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a02633c16f90e63%3A0x1ef3e9e541dc5f0f!2sSonargaon%20Bungalow%20Project!5e0!3m2!1sen!2sin!4v1754338702906!5m2!1sen!2sin"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Sonar Gaon Location"
-                  className="group-hover:scale-105 transition-transform duration-500"
-                ></iframe>
-              </div>
-            </CardContent>
-          </Card>
+          <motion.div
+            whileHover={{
+              rotateX: -5,
+              rotateY: 5,
+              scale: 1.02,
+              transition: { type: "spring", stiffness: 200, damping: 15 },
+            }}
+            className="rounded-xl shadow-2xl overflow-hidden"
+          >
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10352.38894679404!2d88.20978373257131!3d22.405782608781863!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a02633c16f90e63%3A0x1ef3e9e541dc5f0f!2sSonargaon%20Bungalow%20Project!5e0!3m2!1sen!2sin!4v1754338702906!5m2!1sen!2sin"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Sonar Gaon Location"
+              className="w-full h-96 rounded-xl"
+            ></iframe>
+          </motion.div>
         </div>
       </div>
-
-      {/* Custom animations */}
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-          @keyframes slide-up {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-          }
-          
-          @keyframes fade-in {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-          }
-          
-          @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-          }
-          
-          .animate-slide-up {
-            animation: slide-up 0.8s ease-out;
-          }
-          
-          .animate-fade-in {
-            animation: fade-in 1s ease-out;
-          }
-          
-          .animate-float {
-            animation: float 4s ease-in-out infinite;
-          }
-        `,
-        }}
-      />
     </Section>
   );
 }

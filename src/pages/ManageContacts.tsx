@@ -50,7 +50,7 @@ const ManageContacts: React.FC<ManageContactsProps> = ({
   const contactTypeColors: Record<string, string> = {
     committee: 'from-amber-500 to-orange-600',
     emergency: 'from-red-500 to-rose-600',
-    staff: 'from-emerald-500 to-teal-600',
+    Services: 'from-emerald-500 to-teal-600',
     vendor: 'from-blue-500 to-indigo-600'
   };
 
@@ -206,7 +206,7 @@ const ManageContacts: React.FC<ManageContactsProps> = ({
                         <h3 className="text-base sm:text-lg font-semibold text-slate-800 group-hover:text-teal-600 transition-colors">
                           {contact.name || 'Unnamed Contact'}
                         </h3>
-                        <span className={`self-start px-2 sm:px-3 py-1 bg-gradient-to-r ${contactTypeColors[contact.type] || contactTypeColors.staff} text-white text-xs font-medium rounded-full whitespace-nowrap`}>
+                        <span className={`self-start px-2 sm:px-3 py-1 bg-gradient-to-r ${contactTypeColors[contact.type] || contactTypeColors.Services} text-white text-xs font-medium rounded-full whitespace-nowrap`}>
                           {getContactTypeLabel(contact.type)}
                         </span>
                       </div>

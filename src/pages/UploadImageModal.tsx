@@ -72,12 +72,15 @@ const UploadImageModal = ({ isOpen, onClose, onSuccess, imageCategories }) => {
                 <option key={type.value} value={type.value}>{type.label}</option>
               )}
             </select>
+            
+            {/* Enhanced Mobile Responsive Upload Button */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl"
+              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 sm:py-3 px-6 rounded-xl hover:from-indigo-700 hover:to-purple-700 active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 font-semibold text-lg sm:text-base disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl touch-manipulation min-h-[56px] sm:min-h-[48px]"
             >
-              <Save className="w-5 h-5" /> {isSubmitting ? 'Uploading...' : 'Upload Image'}
+              <Save className={`${isSubmitting ? 'animate-spin' : ''} w-5 h-5 sm:w-5 sm:h-5`} />
+              <span>{isSubmitting ? 'Uploading...' : 'Upload Image'}</span>
             </button>
           </form>
         </div>

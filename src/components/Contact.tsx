@@ -39,7 +39,7 @@ type CommitteeItem = {
 
 type FlatContact = {
   id?: string;
-  type: "committee" | "emergency" | "staff" | "vendor" | string;
+  type: "committee" | "emergency" | "Services" | "vendor" | string;
   name?: string;
   position?: string;
   phone?: string;
@@ -53,12 +53,12 @@ type FlatContact = {
 export function Contact() {
   const [committeeFromDb, setCommitteeFromDb] = useState<CommitteeItem[]>([]);
   const [emergencyFromDb, setEmergencyFromDb] = useState<{ service: string; number: string; color: string; description?: string; image?: string }[]>([]);
-  const [staffFromDb, setStaffFromDb] = useState<FlatContact[]>([]);
+  const [ServicesFromDb, setServicesFromDb] = useState<FlatContact[]>([]);
   const [vendorsFromDb, setVendorsFromDb] = useState<FlatContact[]>([]);
   const [loadingContacts, setLoadingContacts] = useState(true);
 
   // Tabs
-  const [dirTab, setDirTab] = useState<"staff" | "vendors">("vendors");
+  const [dirTab, setDirTab] = useState<"Services" | "vendors">("vendors");
 
   // Shared cards-per-page
   const CARDS_PER_PAGE = 4;
@@ -67,9 +67,9 @@ export function Contact() {
   const [vendorSearch, setVendorSearch] = useState("");
   const [vendorPage, setVendorPage] = useState(0);
 
-  // Staff: search + carousel (4 visible)
-  const [staffSearch, setStaffSearch] = useState("");
-  const [staffPage, setStaffPage] = useState(0);
+  // Services: search + carousel (4 visible)
+  const [ServicesSearch, setServicesSearch] = useState("");
+  const [ServicesPage, setServicesPage] = useState(0);
 
   // Detail modal
   const [detailOpen, setDetailOpen] = useState(false);
@@ -100,7 +100,7 @@ export function Contact() {
 
         const committee = (all || []).filter((c) => c?.type === "committee");
         const emergency = (all || []).filter((c) => c?.type === "emergency");
-        const staff = (all || []).filter((c) => c?.type === "staff");
+        const Services = (all || []).filter((c) => c?.type === "Services");
         const vendors = (all || []).filter((c) => c?.type === "vendor");
 
         const mappedCommittee: CommitteeItem[] = committee.map((c) => ({
@@ -123,9 +123,9 @@ export function Contact() {
           image: e.image || ""
         }));
 
-        const mappedStaff: FlatContact[] = staff.map((s) => ({
+        const mappedServices: FlatContact[] = Services.map((s) => ({
           ...s,
-          type: "staff",
+          type: "Services",
           name: s.name || "—",
           position: s.position || "—",
           phone: s.phone || "—",
@@ -147,7 +147,7 @@ export function Contact() {
 
         setCommitteeFromDb(mappedCommittee);
         setEmergencyFromDb(mappedEmergency);
-        setStaffFromDb(mappedStaff);
+        setServicesFromDb(mappedServices);
         setVendorsFromDb(mappedVendors);
       } catch (e) {
         console.error("Failed to load contacts for Contact page:", e);
@@ -173,21 +173,21 @@ export function Contact() {
     setVendorPage(0); // reset to first page when searching or switching to Vendors tab
   }, [vendorSearch, dirTab]);
 
-  // ===== Staff: filter (name only), sort A→Z, paginate 4 =====
-  const filteredSortedStaff = useMemo(() => {
-    const q = staffSearch.trim().toLowerCase();
-    return staffFromDb
+  // ===== Services: filter (name only), sort A→Z, paginate 4 =====
+  const filteredSortedServices = useMemo(() => {
+    const q = ServicesSearch.trim().toLowerCase();
+    return ServicesFromDb
       .filter((s) => (s.name || "").toLowerCase().includes(q))
       .sort((a, b) => (a.name || "").localeCompare(b.name || ""));
-  }, [staffFromDb, staffSearch]);
+  }, [ServicesFromDb, ServicesSearch]);
 
-  const staffTotalPages = Math.max(1, Math.ceil(filteredSortedStaff.length / CARDS_PER_PAGE));
-  const staffStart = staffPage * CARDS_PER_PAGE;
-  const staffSlice = filteredSortedStaff.slice(staffStart, staffStart + CARDS_PER_PAGE);
+  const ServicesTotalPages = Math.max(1, Math.ceil(filteredSortedServices.length / CARDS_PER_PAGE));
+  const ServicesStart = ServicesPage * CARDS_PER_PAGE;
+  const ServicesSlice = filteredSortedServices.slice(ServicesStart, ServicesStart + CARDS_PER_PAGE);
 
   useEffect(() => {
-    setStaffPage(0); // reset to first page when searching or switching to Staff tab
-  }, [staffSearch, dirTab]);
+    setServicesPage(0); // reset to first page when searching or switching to Services tab
+  }, [ServicesSearch, dirTab]);
 
   // small avatar renderer
   const Avatar = ({ name, image, gradient }: { name?: string; image?: string; gradient: string }) => {
@@ -245,7 +245,7 @@ export function Contact() {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-purple-400 to-indigo-500 rounded-full mx-auto mb-6"></div>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Find committee members, emergency contacts, staff, and vendors that serve our society.
+            Find committee members, emergency contacts, Services, and vendors that serve our society.
           </p>
         </div>
 
@@ -374,7 +374,7 @@ export function Contact() {
 
         {/* Directory */}
         <div className="mt-10 space-y-4" data-aos="fade-up">
-          {/* Tabs + Search (separate searches for vendors/staff) */}
+          {/* Tabs + Search (separate searches for vendors/Services) */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
               <button
@@ -388,13 +388,13 @@ export function Contact() {
                 </div>
               </button>
               <button
-                onClick={() => setDirTab("staff")}
+                onClick={() => setDirTab("Services")}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                  dirTab === "staff" ? "bg-indigo-100 text-indigo-900" : "text-slate-600 hover:bg-slate-50"
+                  dirTab === "Services" ? "bg-indigo-100 text-indigo-900" : "text-slate-600 hover:bg-slate-50"
                 }`}
               >
                 <div className="inline-flex items-center gap-2">
-                  <Briefcase className="h-4 w-4" /> Staff
+                  <Briefcase className="h-4 w-4" /> Services
                 </div>
               </button>
             </div>
@@ -422,14 +422,14 @@ export function Contact() {
               ) : (
                 <>
                   <Input
-                    value={staffSearch}
-                    onChange={(e) => setStaffSearch(e.target.value)}
-                    placeholder="Search staff by name..."
+                    value={ServicesSearch}
+                    onChange={(e) => setServicesSearch(e.target.value)}
+                    placeholder="Search Services by name..."
                     className="pl-9"
                   />
-                  {staffSearch && (
+                  {ServicesSearch && (
                     <button
-                      onClick={() => setStaffSearch("")}
+                      onClick={() => setServicesSearch("")}
                       className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                       aria-label="Clear search"
                     >
@@ -524,20 +524,20 @@ export function Contact() {
             </Card>
           )}
 
-          {/* STAFF: 4 visible with arrows (same behavior as vendors) */}
-          {dirTab === "staff" && (
+          {/* Services: 4 visible with arrows (same behavior as vendors) */}
+          {dirTab === "Services" && (
             <Card className="border-0 shadow-lg" data-aos="zoom-in-up">
               <CardContent className="p-4 md:p-6">
                 {loadingContacts ? (
-                  <div className="p-4 text-sm text-slate-500">Loading staff...</div>
-                ) : filteredSortedStaff.length === 0 ? (
-                  <div className="p-4 text-sm text-slate-500">No staff found.</div>
+                  <div className="p-4 text-sm text-slate-500">Loading Services...</div>
+                ) : filteredSortedServices.length === 0 ? (
+                  <div className="p-4 text-sm text-slate-500">No Services found.</div>
                 ) : (
                   <div className="relative">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                      {staffSlice.map((item, i) => (
+                      {ServicesSlice.map((item, i) => (
                         <div
-                          key={`${item.name}-${staffStart + i}`}
+                          key={`${item.name}-${ServicesStart + i}`}
                           className="p-4 rounded-xl border border-slate-100 bg-white hover:bg-slate-50 transition-all shadow-sm hover:shadow-md"
                           data-aos="fade-up"
                         >
@@ -551,7 +551,7 @@ export function Contact() {
                               <div className="flex items-center gap-2">
                                 <h4 className="font-semibold text-slate-800 truncate">{item.name}</h4>
                                 <span className="text-[10px] px-2 py-0.5 rounded-full border bg-indigo-100 text-indigo-800 border-indigo-200">
-                                  Staff
+                                  Services
                                 </span>
                               </div>
                               <p className="text-xs text-slate-600">{item.position}</p>
@@ -584,19 +584,19 @@ export function Contact() {
                       <Button
                         variant="outline"
                         className="h-9 px-3"
-                        onClick={() => setStaffPage((p) => Math.max(0, p - 1))}
-                        disabled={staffPage === 0}
+                        onClick={() => setServicesPage((p) => Math.max(0, p - 1))}
+                        disabled={ServicesPage === 0}
                       >
                         <ChevronLeft className="h-4 w-4" />
                       </Button>
                       <span className="text-xs text-slate-600">
-                        Page {staffPage + 1} of {staffTotalPages}
+                        Page {ServicesPage + 1} of {ServicesTotalPages}
                       </span>
                       <Button
                         variant="outline"
                         className="h-9 px-3"
-                        onClick={() => setStaffPage((p) => Math.min(staffTotalPages - 1, p + 1))}
-                        disabled={staffPage >= staffTotalPages - 1}
+                        onClick={() => setServicesPage((p) => Math.min(ServicesTotalPages - 1, p + 1))}
+                        disabled={ServicesPage >= ServicesTotalPages - 1}
                       >
                         <ChevronRight className="h-4 w-4" />
                       </Button>
