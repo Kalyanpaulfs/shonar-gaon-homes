@@ -5,6 +5,7 @@ import { About } from "@/components/About";
 import Facilities from "@/components/Facilities";
 
 import { Events } from "@/components/Events";
+// import Events from "@/components/Events";
 import { Gallery } from "@/components/Gallery";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
